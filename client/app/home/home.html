@@ -4,10 +4,20 @@
   <h1>Welcome to BitLottery!</h1><br>
   <h2>Click on a Lottery Below for More Information!</h2>
 
-
   <div ng-repeat="lottery in lotteries">
 
-    {{ lottery.name }}: {{lottery.info}} <br>
+    <div ng-controller="AccordionCtrl">
+      <accordion close-others="oneAtATime">
+        <accordion-group heading="{{lottery.name}} - {{lottery.amountBTC}} BTC">
+          {{lottery.info}}
+          <ng-include class="pull-right" src="'openModalButton.html'"></ng-include>
+        </accordion-group>
+      </accordion>
+    </div><!-- end of accordion -->
+
+
+
+<!--     {{ lottery.name }}: {{lottery.info}} <br> -->
 
 
     <!-- Info: {{ lottery.info }} <br>
@@ -17,16 +27,23 @@
     # of Entrants: {{ lottery.entrants.length}}<br><br> -->
 
 <!-- modal buttons -->
-  <div ng-controller="ModalCtrl">
+<!--   <div ng-controller="ModalCtrl">
 
       <button class="btn btn-default" ng-click="open(lottery)">More Info</button>
-      <div ng-show="selected">Selection from a modal: {{ selected }}</div>
-  </div>
+      <div ng-show="selected">Selection from a modal: {{ selected }}</div> -->
+
+  </div><!-- end of modals control -->
   </div><!-- end of lotteries div -->
 
 
 
 </div><!-- end .container -->
+      <script type="text/ng-template" id="openModalButton.html">
+          <div ng-controller="ModalCtrl">
+            <button class="btn btn-default" ng-click="open(lottery)">More Info</button>
+            <button class="btn btn-primary" ng-click="openQrModal(lottery)">Buy Tickets</button>
+        </div><!-- end of modals control -->
+      </script>
 
       <script type="text/ng-template" id="lotteryInfo.html">
           <div class="modal-header">
@@ -44,7 +61,7 @@
 
           </div>
           <div class="modal-footer">
-              <button class="btn btn-primary" ng-click="openQrModal()">Buy Tickets</button>
+              <button class="btn btn-primary" ng-click="openQrModal(lottery)">Buy Tickets</button>
               <button class="btn btn-warning" ng-click="close()">Close</button>
           </div>
       </script>
