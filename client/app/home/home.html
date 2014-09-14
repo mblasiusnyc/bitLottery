@@ -16,34 +16,51 @@
     End Date: {{ lottery.endDate | date : 'h:mm a, MMMM d, yyyy'}} <br>
     # of Entrants: {{ lottery.entrants.length}}<br><br> -->
 
+<!-- modal buttons -->
+  <div ng-controller="ModalCtrl">
+
+      <button class="btn btn-default" ng-click="open(lottery)">More Info</button>
+      <div ng-show="selected">Selection from a modal: {{ selected }}</div>
+  </div>
   </div><!-- end of lotteries div -->
 
-<!-- modal buttons -->
-    <button class="btn btn-default" ng-click="open()">Open me!</button>
-    <button class="btn btn-default" ng-click="open('lg')">Large modal</button>
-    <button class="btn btn-default" ng-click="open('sm')">Small modal</button>
-    <div ng-show="selected">Selection from a modal: {{ selected }}</div>
 
-<div ng-controller="ModalCtrl">
-    <script type="text/ng-template" id="myModalContent.html">
-        <div class="modal-header">
-            <h3 class="modal-title">I'm a modal!</h3>
-        </div>
-        <div class="modal-body">
-            <ul>
-                <li ng-repeat="item in items">
-                    <a ng-click="selected.item = item">{{ item }}</a>
-                </li>
-            </ul>
-            Selected: <b>{{ selected.item }}</b>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="ok()">OK</button>
-            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
-        </div>
-    </script>
-
-
-</div>
 
 </div><!-- end .container -->
+
+      <script type="text/ng-template" id="lotteryInfo.html">
+          <div class="modal-header">
+              <h3 class="modal-title">{{ lottery.name }}</h3>
+          </div>
+          <div class="modal-body">
+
+            <h4>Description:</h4>
+            {{lottery.info}}
+            <h4>Start Time:</h4>
+            {{lottery.startDate | date : 'h:mm a, MMMM d, yyyy'}}
+            <h4>End Time:</h4>
+            {{lottery.endDate | date : 'h:mm a, MMMM d, yyyy'}}
+
+
+          </div>
+          <div class="modal-footer">
+              <button class="btn btn-primary" ng-click="openQrModal()">Buy Tickets</button>
+              <button class="btn btn-warning" ng-click="close()">Close</button>
+          </div>
+      </script>
+
+      <script type="text/ng-template" id="lotteryQR.html">
+          <div class="modal-header">
+              <h3 class="modal-title">Buy Tickets: {{ lottery.name }}</h3>
+          </div>
+          <div class="modal-body">
+
+          <h4>Send Bitcoin to the address below:</h4>
+          {{ lottery.publicKey }} <br>
+
+          </div>
+          <div class="modal-footer">
+              <button class="btn btn-warning" ng-click="close()">Close</button>
+          </div>
+      </script>
+
