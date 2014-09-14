@@ -56,7 +56,9 @@
           <div class="modal-body">
 
           <h4>Send Bitcoin to the address below:</h4>
-          {{ lottery.publicKey }} <br>
+          {{ lottery.publicKey | uppercase}}<br><br>
+          <h4>Scan the QR code below:</h4>
+          <qr class="centered" type-number="3" correction-level="'M'" size="200" input-mode="'ALPHA_NUM'" text="lottery.publicKey" image="true"></qr>
 
           </div>
           <div class="modal-footer">

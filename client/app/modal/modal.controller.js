@@ -52,7 +52,6 @@ angular.module('bitLotteryApp')
       var modalInstance = $modal.open({
         templateUrl: 'lotteryQR.html',
         controller: ModalInstanceCtrl,
-        size: 'sm',
         resolve: {
           lottery: function () {
             return $scope.lottery;
