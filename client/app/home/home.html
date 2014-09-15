@@ -7,14 +7,14 @@
   <div ng-repeat="lottery in lotteries">
     <ng-include src="'accordian.html'"></ng-include>
   </div><!-- end of lotteries div -->
-  <button class="btn btn-success btn-block btn-large" ng-click="openCreateNewLotteryModal()" ng-controller="ModalCtrl">Create New Lottery</button>
+  <button class="btn btn-success btn-block btn-large" ng-click="openModal('createNewLottery')" ng-controller="ModalCtrl"><h4>Create New Lottery</h4></button>
 
 
 </div><!-- end .container -->
       <script type="text/ng-template" id="openModalButton.html">
         <div ng-controller="ModalCtrl">
-          <button class="btn btn-default" ng-click="open(lottery)">More Info</button>
-          <button class="btn btn-primary" ng-click="openQrModal(lottery)">Buy Tickets</button>
+          <button class="btn btn-default" ng-click="openModal('lotteryInfo', lottery)">More Info</button>
+          <button class="btn btn-primary" ng-click="openModal('lotteryQR', lottery)">Buy Tickets</button>
         </div><!-- end of modals control -->
       </script>
 
@@ -66,7 +66,7 @@
 
         </div>
         <div class="modal-footer">
-            <button class="btn btn-primary" ng-click="openQrModal(lottery)">Buy Tickets</button>
+            <button ng-controller="ModalCtrl" class="btn btn-primary" ng-click="openModal('lotteryQR', lottery)">Buy Tickets</button>
             <button class="btn btn-warning" ng-click="close()">Close</button>
         </div>
       </script>
