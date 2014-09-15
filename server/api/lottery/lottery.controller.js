@@ -42,6 +42,12 @@ exports.update = function(req, res) {
   });
 };
 
+function resolveLottery(lottery){
+
+}
+
+
+
 // Deletes a lottery from the DB.
 exports.destroy = function(req, res) {
   Lottery.findById(req.params.id, function (err, lottery) {

@@ -5,81 +5,63 @@
   <h2>Click on a Lottery Below for More Information!</h2>
 
   <div ng-repeat="lottery in lotteries">
-
-    <div ng-controller="AccordionCtrl">
-      <accordion close-others="oneAtATime">
-        <accordion-group heading="{{lottery.name}} - {{lottery.amountBTC}} BTC">
-          {{lottery.info}}
-          <ng-include class="pull-right" src="'openModalButton.html'"></ng-include>
-        </accordion-group>
-      </accordion>
-    </div><!-- end of accordion -->
-
-
-
-<!--     {{ lottery.name }}: {{lottery.info}} <br> -->
-
-
-    <!-- Info: {{ lottery.info }} <br>
-    Address: {{ lottery.publicKey }} <br>
-    Start Date: {{ lottery.startDate | date : 'h:mm a, MMMM d, yyyy'}} <br>
-    End Date: {{ lottery.endDate | date : 'h:mm a, MMMM d, yyyy'}} <br>
-    # of Entrants: {{ lottery.entrants.length}}<br><br> -->
-
-<!-- modal buttons -->
-<!--   <div ng-controller="ModalCtrl">
-
-      <button class="btn btn-default" ng-click="open(lottery)">More Info</button>
-      <div ng-show="selected">Selection from a modal: {{ selected }}</div> -->
-
-  </div><!-- end of modals control -->
+    <ng-include src="'accordian.html'"></ng-include>
   </div><!-- end of lotteries div -->
-
-
 
 </div><!-- end .container -->
       <script type="text/ng-template" id="openModalButton.html">
-          <div ng-controller="ModalCtrl">
-            <button class="btn btn-default" ng-click="open(lottery)">More Info</button>
-            <button class="btn btn-primary" ng-click="openQrModal(lottery)">Buy Tickets</button>
+        <div ng-controller="ModalCtrl">
+          <button class="btn btn-default" ng-click="open(lottery)">More Info</button>
+          <button class="btn btn-primary" ng-click="openQrModal(lottery)">Buy Tickets</button>
         </div><!-- end of modals control -->
       </script>
 
+      <script type="text/ng-template" id="accordian.html">
+        <div ng-controller="AccordionCtrl">
+          <accordion close-others="oneAtATime">
+            <accordion-group heading="{{lottery.name}} - {{lottery.amountBTC}} BTC">
+              {{lottery.info}}
+              <ng-include class="pull-right" src="'openModalButton.html'"></ng-include>
+            </accordion-group>
+          </accordion>
+        </div><!-- end of accordion -->
+      </script>
+
       <script type="text/ng-template" id="lotteryInfo.html">
-          <div class="modal-header">
-              <h3 class="modal-title">{{ lottery.name }}</h3>
-          </div>
-          <div class="modal-body">
+        <div class="modal-header">
+            <h3 class="modal-title">{{ lottery.name }}</h3>
+        </div>
+        <div class="modal-body">
 
-            <h4>Description:</h4>
-            {{lottery.info}}
-            <h4>Start Time:</h4>
-            {{lottery.startDate | date : 'h:mm a, MMMM d, yyyy'}}
-            <h4>End Time:</h4>
-            {{lottery.endDate | date : 'h:mm a, MMMM d, yyyy'}}
+          <h4>Description:</h4>
+          {{lottery.info}}
+          <h4>Start Time:</h4>
+          {{lottery.startDate | date : 'h:mm a, MMMM d, yyyy'}}
+          <h4>End Time:</h4>
+          {{lottery.endDate | date : 'h:mm a, MMMM d, yyyy'}}
 
 
-          </div>
-          <div class="modal-footer">
-              <button class="btn btn-primary" ng-click="openQrModal(lottery)">Buy Tickets</button>
-              <button class="btn btn-warning" ng-click="close()">Close</button>
-          </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="openQrModal(lottery)">Buy Tickets</button>
+            <button class="btn btn-warning" ng-click="close()">Close</button>
+        </div>
       </script>
 
       <script type="text/ng-template" id="lotteryQR.html">
-          <div class="modal-header">
-              <h3 class="modal-title">Buy Tickets: {{ lottery.name }}</h3>
-          </div>
-          <div class="modal-body">
+        <div class="modal-header">
+            <h3 class="modal-title">Buy Tickets: {{ lottery.name }}</h3>
+        </div>
+        <div class="modal-body">
 
-          <h4>Send Bitcoin to the address below:</h4>
-          {{ lottery.publicKey | uppercase}}<br><br>
-          <h4>Scan the QR code below:</h4>
-          <qr class="centered" type-number="3" correction-level="'M'" size="200" input-mode="'ALPHA_NUM'" text="lottery.publicKey" image="true"></qr>
+        <h4>Send Bitcoin to the address below:</h4>
+        {{ lottery.publicKey | uppercase}}<br><br>
+        <h4>Scan the QR code below:</h4>
+        <qr class="centered" type-number="3" correction-level="'M'" size="200" input-mode="'ALPHA_NUM'" text="lottery.publicKey" image="true"></qr>
 
-          </div>
-          <div class="modal-footer">
-              <button class="btn btn-warning" ng-click="close()">Close</button>
-          </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="close()">Close</button>
+        </div>
       </script>
 
