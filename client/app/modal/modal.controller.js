@@ -3,14 +3,10 @@
 angular.module('bitLotteryApp')
   var ModalCtrl = function ($scope, $modal, $log) {
 
-    $scope.items = ['item1', 'item2', 'item3'];
-
-
     $scope.openModal = function (template, lottery, size) {
       $scope.lottery = lottery ? lottery : null;
-      $scope.template = template.toString()+".html";
       var moreInfoModalInstance = $modal.open({
-        templateUrl: $scope.template,
+        templateUrl: '/app/templates/'+template+'.html',
         controller: ModalInstanceCtrl,
         size: size,
         resolve: {
@@ -27,7 +23,6 @@ angular.module('bitLotteryApp')
       });
     };
   };
-
 
   // Please note that $modalInstance represents a modal window (instance) dependency.
   // It is not the same as the $modal service used above.

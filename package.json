@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "main": "server/app.js",
   "dependencies": {
+    "async": "^0.9.0",
     "body-parser": "~1.5.0",
     "chance": "^0.6.1",
     "composable-middleware": "^0.3.0",
@@ -23,6 +24,7 @@
     "passport-facebook": "latest",
     "passport-google-oauth": "latest",
     "passport-local": "~0.1.6",
+    "request": "^2.42.0",
     "serve-favicon": "~2.0.1",
     "socket.io": "^1.0.6",
     "socket.io-client": "^1.0.6",
