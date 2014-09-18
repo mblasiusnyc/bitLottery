@@ -19,12 +19,20 @@ var passport = require('passport');
 module.exports = function(app) {
   var env = app.get('env');
 
+  app.use('/api/lotteries/:id/webhook', function(req, res, next) {
+    console.log("here in middleware", console.log(req.headers));
+
+    req.headers['content-type'] = 'application/json';
+    next();
+  });
+
   app.set('views', config.root + '/server/views');
   app.engine('html', require('ejs').renderFile);
   app.set('view engine', 'html');
   app.use(compression());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
+  app.use(bodyParser.json({type: '*'}));
   app.use(methodOverride());
   app.use(cookieParser());
   app.use(passport.initialize());
