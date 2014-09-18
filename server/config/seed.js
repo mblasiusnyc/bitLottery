@@ -8,7 +8,6 @@
 var Lottery = require('../api/lottery/lottery.model');
 var User = require('../api/user/user.model');
 
-
 Lottery.find({}).remove(function() {
   Lottery.create({
     name: 'First Lottery',
@@ -19,7 +18,7 @@ Lottery.find({}).remove(function() {
     amountBTC: .3,
     entrants: [{address: '1KfQZXsEZQYFJVLvk5nLYnR1M4iVwX5e6w', amountBTC: .1}, {address:'1MK8sQ82pUpjSTfmCa64tLgPTt1ss6QU4q', amountBTC: .2}],
     startDate: new Date(),
-    endDate: new Date(2014, 8, 16, 12, 43),
+    endDate: new Date(2014, 9, 16, 12, 43),
     winner: ""
     },
     {
@@ -29,9 +28,9 @@ Lottery.find({}).remove(function() {
     publicKey: '1DC79gQ7vief6Q9NANfp3WTcdPEZJ8ynoz',
     privateKey: '5KXxdV3fH3nVMooK7mhzXaBVFEuy6NaJVsBaazsKyqA36TttuTo',
     amountBTC: .5,
-    entrants: [{address: '1KfQZXsEZQYFJVLvk5nLYnR1M4iVwX5e6w', amountBTC: .1}, {address:'1MK8sQ82pUpjSTfmCa64tLgPTt1ss6QU4q', amountBTC: .2}, {address: '1KfQZXsEZQYFJVLvk5nLYnR1M4iVwX5e6w', amountBTC: .1}],
-    startDate: new Date(2014, 8, 12),
-    endDate: new Date(2014, 8, 15),
+    entrants: [{address: '114oEX9xbuP6Afe1Mhw6DQcjyQ9ujNAftx', amountBTC: .1}, {address:'1MK8sQ82pUpjSTfmCa64tLgPTt1ss6QU4q', amountBTC: .2}, {address: '1KfQZXsEZQYFJVLvk5nLYnR1M4iVwX5e6w', amountBTC: .1}],
+    startDate: new Date(),
+    endDate: new Date(2014, 9, 15),
     winner: ""
   });
 });

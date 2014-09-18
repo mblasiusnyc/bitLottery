@@ -33,39 +33,53 @@ exports.create = function(req, res) {
     request.post('https://api.blockcypher.com/v1/btc/main/addrs?token=27cdb6a15c19574278edcecb049a4119', function(err, response){
       apiResponseBody = JSON.parse(response.body);
       // console.log("apiResponseBody:",apiResponseBody)
-
-      newLotteryObj.address = apiResponseBody.address.toUpperCase();
+      console.log("address response from api: ", apiResponseBody)
+      newLotteryObj.address = apiResponseBody.address;
       newLotteryObj.publicKey = apiResponseBody.public;
       newLotteryObj.privateKey = apiResponseBody.private;
-      console.log("I am a lottery inside getBtcAddress:", newLotteryObj)
       done(null, "done with api BTCaddress request");
     });
   }
 
   var createLottery = function() {
-    console.log("I am a lottery inside createlottery:", newLotteryObj)
      Lottery.create(newLotteryObj, function(err, lottery) {
       if(err) { return handleError(res, err); }
-
+      console.log("lottery in database: ", lottery);
+      createEntrantsWebhook(lottery);
       return res.json(201, lottery);
     });
    }
-
-  var saveBtcAddress = function(done){
-    // req.body.publicKey = apiResponseBody.public;
-    // req.body.privateKey = apiResponseBody.private;
-    done(null, "done saving BTC address");
-  }
-
   async.series([getBtcAddress], createLottery);
 };
 
+function createEntrantsWebhook(lottery){
+  var data = {
+    "url": "http://btclottery.ngrok.com/api/lotteries/" + lottery._id + "/webhook",
+    "event": 'unconfirmed-tx',
+    "address": lottery.address,
+    "token": "27cdb6a15c19574278edcecb049a4119"
+  };
 
-// function saveBtcAddress(done){
-//   publicKey: responseObject.public,
-//   privateKey: responseObject.private
-// }
+  var options = {
+    url: 'https://api.blockcypher.com/v1/btc/main/hooks',
+    port: 80,
+    json: data
+  };
 
+  request.post(options, function(err, responseData){
+    if(err) {console.log('Error creating webhook: ', err)};
+    console.log("Response Data (body): ",responseData.body);
+    console.log("webhook created, waiting for callbacks at : ", data.url);
+  });
+};
+
+exports.recordEntrant = function(req,res,next) {
+  var entrantData = req;
+  var mongoId = req.params._id;
+  // console.log(req.query);
+  // console.log("An entry has been logged");
+  // console.log("_id is: ", mongoId);
+}
 
 // Updates an existing lottery in the DB.
 exports.update = function(req, res) {
@@ -80,9 +94,6 @@ exports.update = function(req, res) {
     });
   });
 };
-
-
-
 
 // Deletes a lottery from the DB.
 exports.destroy = function(req, res) {

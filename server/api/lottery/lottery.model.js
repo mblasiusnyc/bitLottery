@@ -1,8 +1,7 @@
 'use strict';
 
 
-var request = require('request'),
-var entrant = require('../entrant.entrant.model.js'),
+var request = require('request');
 var mongoose = require('mongoose'),
 
   Schema = mongoose.Schema;
@@ -16,12 +15,13 @@ var LotterySchema = new Schema({
   amountBTC: Number,
   startDate: {type: Date, default: Date.now},
   endDate: {type: Date, default: Date.now},
-  entrants: [entrant.EntrantSchema],
+  entrants: [EntrantSchema],
+  winner: String
 });
 
-// var EntrantSchema = new Schema({
-//   address: String,
-//   amountBTC: Number
-// });
+var EntrantSchema = new Schema({
+  address: String,
+  amountBTC: Number
+});
 
 module.exports = mongoose.model('Lottery', LotterySchema);
