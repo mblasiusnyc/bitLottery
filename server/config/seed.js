@@ -8,6 +8,7 @@
 var Lottery = require('../api/lottery/lottery.model');
 var User = require('../api/user/user.model');
 
+
 Lottery.find({}).remove(function() {
   Lottery.create({
     name: 'First Lottery',

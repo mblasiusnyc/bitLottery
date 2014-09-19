@@ -56,14 +56,14 @@ exports.create = function(req, res) {
 
 function createEntrantsWebhook(lottery){
   var data = {
-    "url": "http://btclottery.ngrok.com/api/lotteries/" + lottery._id + "/webhook",
+    "url": "http://btclottery.ngrok.com/api/lotteries/" + lottery._id +"/webhook",
     "event": 'unconfirmed-tx',
     "address": lottery.address,
     "token": "27cdb6a15c19574278edcecb049a4119"
   };
 
   var options = {
-    url: 'https://api.blockcypher.com/v1/btc/main/hooks',
+    url: 'https://api.blockcypher.com/v1/btc/test3/hooks',
     port: 80,
     json: data
   };
@@ -79,6 +79,18 @@ exports.recordEntrant = function(req,res,next) {
   //catches webhook posts for new entrants
   console.log("Record Entrant");
   console.log("body", req.body);
+  var entrantAddress = req.body.addresses[0];
+  var lotteryAddress = req.body.addresses[1];
+  var entrantAmountBtc = req.body.total/100000000;
+  console.log("entrantAddress: ", entrantAddress);
+  console.log("lotteryAddress: ", lotteryAddress);
+  console.log("entrantAmountBtc: ", entrantAmountBtc);
+  Lottery.findById(req.params._id, function(err, lottery){
+    if(err){console.log('err: ', err)};
+    lottery.entrants.push({'address': entrantAddress, 'amountBTC': entrantAmountBtc});
+    lottery.amountBTC += entrantAmountBtc;
+    lottery.save();
+  });
   res.end();
 }
 
@@ -91,7 +103,6 @@ exports.endLottery = function(req, res){
     var newLottery = lottery;
     newLottery.endDate = new Date();
     newLottery.winner = decideWinner(lottery);
-    // request.put('http://localhost/api/lotteries/'+newLottery._id);
     res.json(200, newLottery);
   });
 }
