@@ -13,6 +13,8 @@ router.post('/', controller.create);
 router.post('/:_id/webhook', controller.recordEntrant);
 
 router.put('/:id/resolve', controller.endLottery);
+
+
 router.put('/:id/payWinner', controller.payWinner);
 router.put('/:id', controller.update);
 router.patch('/:id', controller.update);

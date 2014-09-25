@@ -8,6 +8,7 @@ var Bitcoin = require('bitcoinjs-lib');
 var convertHex = require('convert-hex');
 var Lottery = require('./lottery.model');
 var bases = require('bases');
+var chain = require('chain-node');
 var cs = require('coinstring');
 
 console.log(Bitcoin.convert);
@@ -29,12 +30,13 @@ exports.show = function(req, res) {
   });
 };
 
+
+//testnet wallet: hum heel those lung dreamer path creator rhythm stage dim brave bit
 // Creates a new lottery in the DB.
 
 exports.create = function(req, res) {
   var apiResponseBody;
   var newLotteryObj = req.body;
-  // var newLottery = req.body;
 
   var getBtcAddress = function(done){
     request.post('https://api.blockcypher.com/v1/btc/main/addrs?token=27cdb6a15c19574278edcecb049a4119', function(err, response){
@@ -42,7 +44,8 @@ exports.create = function(req, res) {
       console.log("address response from api: ", apiResponseBody)
       newLotteryObj.address = apiResponseBody.address;
       newLotteryObj.publicKey = apiResponseBody.public;
-      newLotteryObj.privateKey = apiResponseBody.private;
+      newLotteryObj.privateKey = cs.encode(new Buffer(apiResponseBody.private + "01", 'hex'), 0x80);
+      console.log(newLotteryObj.privateKey);
       done(null, "done with api BTCaddress request");
     });
   }
@@ -82,10 +85,18 @@ function createEntrantsWebhook(lottery){
 exports.recordEntrant = function(req,res,next) {
   //catches webhook posts for new entrants
   console.log("Record Entrant");
-  console.log("body", req.body);
+  // console.log("body", req.body);
+
+  for(var i=0;i<req.body.outputs.length;i++){
+    console.log("outputs.addresses"+ i, req.body.outputs[i].addresses);
+  }
+
+
   var entrantAddress = req.body.addresses[0];
   var lotteryAddress = req.body.addresses[1];
   var entrantAmountBtc = req.body.total/100000000;
+
+
   console.log("entrantAddress: ", entrantAddress);
   console.log("lotteryAddress: ", lotteryAddress);
   console.log("entrantAmountBtc: ", entrantAmountBtc);
@@ -104,16 +115,15 @@ exports.endLottery = function(req, res){
   Lottery.findById(req.params.id, function (err, lottery){
     if(err){ return handleError(res,req); }
     if(!lottery) { return res.send(404); }
-    var newLottery = lottery;
-    newLottery.endDate = new Date();
-    newLottery.winner = decideWinner(lottery);
-    res.json(200, newLottery);
+    var endingLottery = lottery;
+    endingLottery.endDate = new Date();
+    endingLottery.winner = decideWinner(lottery);
+    // res.json(200, endingLottery);
   });
 }
 
 
 exports.payWinner = [
-
 // 1. Post our simple transaction information to get back the fully built transaction,
 //    includes fees when required.
   function newTransaction(req,res,next){
@@ -123,20 +133,18 @@ exports.payWinner = [
     public  : req.body.publicKey,
     address : req.body.address
   };
-  // console.log(req.inputSource.private);
-  // req.privateKey = req.body.privateKey;
-  console.log('Gets to here')
-  console.log(req.inputSource.private)
+  // console.log("req.body: ", req.body)
 
-  // console.log(bases.toBase58(bases.fromBase16(req.inputSource.private)))
-  req.key = Bitcoin.ECKey.fromWIF(cs.encode(new Buffer(req.inputSource.private, 'hex'), 0x80));
-  console.log(req.key)
   var newtx = {
     "inputs": [{"addresses": [req.inputSource.address]}],
-    "outputs": [{"addresses": ['1J7mq2fgXt229LSzFSjWW4ZjD56o1PyzGJ'], "value": -1}]
+    "outputs": [{"addresses": ['1PZoH7aHiM3c5zxSHPgXWWSm9AyZcDLv8M'], "value": -1}]
   }
+
+  // console.log(newtx)
+
   request.post({url: "https://api.blockcypher.com/v1/btc/main/txs/new", body: JSON.stringify(newtx)}, function(err, httpResponse, body){
     req.newtx = JSON.parse(body);
+    // console.log(JSON.parse(body));
     next();
   });
   },
@@ -144,31 +152,47 @@ exports.payWinner = [
   // 2. Sign the hexadecimal strings returned with the fully built transaction and include
   //    the req.inputSource public address.
   function signAndSend(req,res,next){
-    // if (checkError(req.unsignedtx)) return;
-    // var newtx = req.newtx;
-    req.newtx.pubkeys  = [];
-    // console.log(req.newtx['tx']);
-    console.log(req.newtx.tosign);
-    req.newtx.signatures  = req.newtx.tosign.map(function(tosign) {
-      req.newtx.pubkeys.push(req.inputSource.public);
-      var tosignBuffer = new Buffer(32);
-      tosignBuffer.write(tosign);
+    // console.log("req.newtx.inputs: ",req.newtx.tx.inputs);
+    // console.log("req.newtx.outputs: ",req.newtx.tx.outputs);
 
-      // return bytesToHex(req.key.sign(hexToBytes(tosign)))
-      // return convertHex.bytesToHex(req.key.sign(convertHex.hexToBytes(tosignBuffer)));
-      return Bitcoin.convert.bufferToWordArray((req.key.sign(Bitcoin.convert.wordArrayToBuffer(tosign))));
-    });
+    // console.log('req.inputSource.private', req.inputSource.private);
+    var key = new Bitcoin.ECKey.fromWIF(req.inputSource.private);
+    // console.log('key', key);
 
-    request.post({url: "https://api.blockcypher.com/v1/btc/main/txs/send", body: JSON.stringify(req.newtx)}, function(err, httpResonse, body){
-    console.log("body from signAndSend function: ", body);
-      req.finaltx = body;
+// console.log(req.newtx.tx.inputs)
+    var newtx = new Bitcoin.Transaction();
+    for(var i=0; i<req.newtx.tx.inputs.length; i++){
+      newtx.addInput(req.newtx.tx.inputs[i].prev_hash, 0);
+      console.log(req.newtx.tx.inputs[i].prev_hash)
+    }
+
+
+    newtx.addOutput(req.body.winner, 10000);
+
+    for(var i=0; i<req.newtx.tx.inputs.length; i++){
+      newtx.sign(i, key);
+    }
+    // console.log(req.inputSource)
+    // console.log(newtx);
+
+    console.log("Tx Hash: ", newtx.toHex());
+
+
+    chain.sendTransaction(newtx.toHex(), function(err, resp) {
+      console.log('Error: ' + err);
+      console.log('Resp: ',resp);
     });
+    // request.post({url: "https://api.blockcypher.com/v1/btc/main/txs/send",
+    //   body: JSON.stringify(newtx)}, function(err, httpResponse, body){
+    //   if(err) console.log("err:", err);
+    //   // if(httpResponse) console.log("httpResponse:", httpResponse);
+    //   if(body) console.log("body:", body);
+    // // console.log("body from signAndSend function: ", body);
+    //   req.finaltx = body;
+    // });
+    res.end();
   }
 ]
-
-
-
-
 
 function decideWinner(lottery){
   var totalPool = lottery.amountBTC;
