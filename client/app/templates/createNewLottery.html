@@ -1,0 +1,24 @@
+<div class="modal-header">
+    <h3 class="modal-title">Create a New Lottery</h3>
+</div>
+
+<div ng-controller="LotteryCtrl" class="modal-body">
+  <form ng-submit="createLottery()">
+    <h4>Title:</h4>
+      <input ng-model="newLottery.name" required></input>
+    <h4>Description:</h4>
+      <textarea ng-model="newLottery.info" required></textarea>
+
+    <h4>Network:</h4>
+      <select ng-model="newLottery.network" ng-options="option.value as option.text for option in options" required>
+      </select>
+    <h4>End Lottery:</h4>
+      <ng-include src="'app/templates/endDate.html'" required></ng-include>
+      (All lotteries end at 6PM of the end date)
+
+    <div class="modal-footer">
+        <input type="submit" class="btn btn-success" value="Create!">
+        <input type="button" class="btn btn-warning" ng-click="close()" value="Close">
+    </div>
+  </form>
+</div><!-- End LotteryCtrl -->

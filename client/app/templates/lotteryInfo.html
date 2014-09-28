@@ -1,0 +1,21 @@
+<div class="modal-header">
+    <h3 class="modal-title">{{ lottery.name }}</h3>
+</div>
+<div class="modal-body">
+
+  <h4>Description:</h4>
+  {{lottery.info}}
+  <h4>Pool:</h4>
+  {{ lottery.amountBTC }}
+  <h4>Start Time:</h4>
+  {{lottery.startDate | date : 'h:mm a, MMMM d, yyyy'}}
+  <h4>End Time:</h4>
+  {{lottery.endDate | date : 'h:mm a, MMMM d, yyyy'}}
+  <h4 ng-show="lottery.winner">Winner:</h4>
+  {{ lottery.winner }}
+
+</div>
+<div class="modal-footer">
+    <button ng-controller="ModalCtrl" class="btn btn-primary" ng-click="openModal('lotteryQR', lottery)">Buy Tickets</button>
+    <button class="btn btn-warning" ng-click="close()">Close</button>
+</div>

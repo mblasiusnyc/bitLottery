@@ -1,0 +1,14 @@
+<div class="modal-header">
+    <h3 class="modal-title">Buy Tickets: {{ lottery.name }}</h3>
+</div>
+<div class="modal-body">
+
+<h4>Send Bitcoin to the address below:</h4>
+{{ lottery.address}}<br><br>
+<h4>Scan the QR code below:</h4>
+<qr class="centered" type-number="4" correction-level="'M'" size="200" input-mode="'8bit'" text="lottery.address" image="true"></qr>
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="close()">Close</button>
+</div>
