@@ -7,7 +7,8 @@ angular.module('bitLotteryApp', [
   'btford.socket-io',
   'ui.router',
   'ui.bootstrap',
-  'ja.qr'
+  'ja.qr',
+  'ngQuickDate'
 ])
   .config(function ($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
     $urlRouterProvider

@@ -13,10 +13,12 @@ var LotterySchema = new Schema({
   publicKey: String,
   privateKey: String,
   amountBTC: Number,
-  startDate: {type: Date, default: Date.now},
-  endDate: {type: Date, default: Date.now},
+  startDate: String,
+  endDate: String,
   entrants: [EntrantSchema],
-  winner: String
+  winner: String,
+  network: String,
+  webhookId: String
 });
 
 var EntrantSchema = new Schema({
